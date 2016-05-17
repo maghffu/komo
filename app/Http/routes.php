@@ -99,10 +99,18 @@ Route::get('view/{pasar}/{tanggal}',function($pasar = 1,$tanggal)
 		{
 			$q->where('id_pasar',$pasar)->where('tanggal',$tanggal);
 		}])->get();
+		$dt = array();
+		$n = 0;
+		foreach ($datapasar as $key) {
+			$key['getHarga'] == null ? $key['getHarga']= array('harga' => 0 ):"";
+			$dt[$n] = $key;
+			$n++;
+		}
+		// print_r($dt);
 
 		return Response::json(
 			[
-	         'data' => $datapasar,
+	         'data' => $dt,
 	         'kabupaten'=>'batang'
 	    	]
 	    , 200);

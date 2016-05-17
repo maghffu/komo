@@ -140,13 +140,16 @@
                             <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="material-icons">developer_board</i> Master</a>
                                 <div class="collapsible-body">
                                     <ul>
-                                    <li><a href="{{url('komoditas')}}">Komoditas</a></li>
-                                    <li><a href="{{url('pasar')}}">Pasar</a></li> 
+                                        <li><a href="{{url('komoditas')}}">Komoditas</a></li>
+                                        <li><a href="{{url('pasar')}}">Pasar</a></li> 
                                     </ul>
                                 </div>
                             </li>
                             <li class="bold">
-                            	<a href="{{url('harga')}}" class="waves-effect waves-cyan"><i class="material-icons">import_export</i>Input Data</a>
+                                <a href="{{url('harga')}}" class="waves-effect waves-cyan"><i class="material-icons">import_export</i>Input Data</a>
+                            </li>
+                            <li class="bold">
+                            	<a href="{{url('harga/create')}}" class="waves-effect waves-cyan"><i class="material-icons">build</i>Edit Data</a>
                             </li>
                             <li class="bold">
                             	<a class=" waves-effect waves-cyan"><i class="material-icons">receipt</i> Laporan</a>

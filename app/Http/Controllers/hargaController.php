@@ -29,7 +29,7 @@ class hargaController extends Controller
      */
     public function create()
     {
-        //
+        return view('edit_data');
     }
 
     /**
@@ -54,26 +54,40 @@ class hargaController extends Controller
                return redirect('harga')->withErrors($validator)->withInput();
             }
 
-            $cek = harga::where('tanggal',$r['tanggal'])
+            
+            if (isset($r['edit'])) {
+                $h = harga::
+                where('id_komoditi', $r['id_komoditi'.$i])
+                ->where('tanggal', $r['tanggal'])
+                ->where('id_pasar', $r['id_pasar'])
+                ->update( ['harga' => $r['harga'.$i]] );
+            }else{
+                $cek = harga::where('tanggal',$r['tanggal'])
                 ->where('id_pasar',$r['id_pasar'])
                 ->where('id_komoditi',$r['id_komoditi'.$i])
                 ->first();
 
-            if (count($cek) > 0) {
-                DB::rollback();
-               return redirect('harga')->with('eror',true);
-            }
+                if (count($cek) > 0) {
+                    DB::rollback();
+                   return redirect('harga')->with('eror',true);
+                }
 
-            $data = array(
+                $data = array(
                 'id_komoditi' => $r['id_komoditi'.$i],
                 'tanggal' => $r['tanggal'],
                 'harga' => $r['harga'.$i],
                 'id_pasar'=>$r['id_pasar']
                  );
-            harga::create($data);
+
+                harga::create($data);
+            }
         }
             DB::commit();
-           return redirect('harga')->with('success',true);
+            if (isset($r['edit'])) {
+                return redirect('harga/create')->with('success',true);
+            }else{
+                return redirect('harga')->with('success',true);
+            }
         // 'email' => 'unique:users,email_address,NULL,id,account_id,1'
     }
 
@@ -94,9 +108,8 @@ class hargaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Request $r)
     {
-        //
     }
 
     /**
@@ -108,7 +121,42 @@ class hargaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return $request;
+        $r = $request->all();
+        
+        $f = (count($r)/2)-1;
+        DB::beginTransaction();
+        for ($i=0; $i < $f-1; $i++) { 
+
+            $validator = Validator::make($r, [
+                'id_komoditi'.$i => 'required',
+                'id_pasar' => 'required',
+            ]);
+            if ($validator->fails()) {
+                DB::rollback();
+               return redirect('harga/create')->withErrors($validator)->withInput();
+            }
+
+            $cek = harga::where('tanggal',$r['tanggal'])
+                ->where('id_pasar',$r['id_pasar'])
+                ->where('id_komoditi',$r['id_komoditi'.$i])
+                ->first();
+
+            if (count($cek) > 0) {
+                DB::rollback();
+               return redirect('harga/create')->with('eror',true);
+            }
+
+            $data = array(
+                'id_komoditi' => $r['id_komoditi'.$i],
+                'tanggal' => $r['tanggal'],
+                'harga' => $r['harga'.$i],
+                'id_pasar'=>$r['id_pasar']
+                 );
+            harga::firstOrCreate($data);
+        }
+            DB::commit();
+           return redirect('harga/create')->with('success',true);
     }
 
     /**
